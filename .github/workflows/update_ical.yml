@@ -1,0 +1,28 @@
+name: Update iCal
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at midnight UTC
+
+jobs:
+  update-ical:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Git
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+
+    - name: Update iCal file
+      run: ./update_ical.sh
+
+    - name: Commit and push changes
+      run: |
+        git checkout -b gh-pages || git checkout gh-pages
+        git add reading-group.ics
+        git commit -m "Update reading group calendar"
+        git push origin gh-pages
